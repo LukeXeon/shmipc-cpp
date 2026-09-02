@@ -18,6 +18,8 @@
 
 #include "shmipc/buffer/manager.hpp"
 
+#include "shmipc/memfd_compat.hpp"
+
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -110,7 +112,7 @@ Result<std::shared_ptr<BufferManager>> BufferManager::get_with_memfd(
 
   if (create) {
     const std::string name = "shmipc" + buffer_path_name;
-    const int fd = ::memfd_create(name.c_str(), 0);
+    const int fd = memfd_create(name.c_str(), 0);
     if (fd < 0) {
       return std::unexpected(Error::other(
           "BufferManager get_with_memfd memfd_create failed: " +

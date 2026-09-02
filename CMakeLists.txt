@@ -31,7 +31,7 @@ option(SHMIPC_BUILD_BENCH "Build shmipc benchmark" ON)
 option(SHMIPC_ENABLE_ASAN "Enable AddressSanitizer" OFF)
 option(SHMIPC_ENABLE_TSAN "Enable ThreadSanitizer" OFF)
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(NOT CMAKE_SYSTEM_NAME MATCHES "^(Linux|Android)$") # rosetta: NDK 下 CMAKE_SYSTEM_NAME = Android(Linux 内核)
   message(FATAL_ERROR "shmipc just support linux OS now")
 endif()
 if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|aarch64|arm64")

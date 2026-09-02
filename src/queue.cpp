@@ -18,6 +18,8 @@
 
 #include "shmipc/queue.hpp"
 
+#include "shmipc/memfd_compat.hpp"
+
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -201,7 +203,7 @@ QueueManager::~QueueManager() = default;
 Result<QueueManager> QueueManager::create_with_memfd(
     const std::string& queue_path, std::uint32_t queue_cap) {
   const std::string name = "shmipc" + queue_path;
-  const int memfd = ::memfd_create(name.c_str(), 0);
+  const int memfd = memfd_create(name.c_str(), 0);
   if (memfd < 0) {
     return std::unexpected(Error::from_errno(errno));
   }
