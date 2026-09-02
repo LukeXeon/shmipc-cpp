@@ -18,7 +18,7 @@
 
 #include "shmipc/buffer/manager.hpp"
 
-#include "shmipc/memfd_compat.hpp"
+#include "shmipc/compat.hpp"
 
 #include <fcntl.h>
 #include <sys/mman.h>

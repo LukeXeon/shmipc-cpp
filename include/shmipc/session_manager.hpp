@@ -35,6 +35,7 @@
 #include <thread>
 #include <vector>
 
+#include "shmipc/compat.hpp"
 #include "shmipc/consts.hpp"
 #include "shmipc/error.hpp"
 #include "shmipc/log.hpp"
@@ -85,8 +86,17 @@ class SessionManager {
   }
 
   // Mirror of the Rust ArcSwap slots.
+  // [rosetta patch 0003] std::atomic<std::shared_ptr<T>> relies on the
+  // C++20 partial specialization that libc++ only ships from LLVM 19;
+  // on older libc++ (NDK) the member declaration itself fails to
+  // instantiate. compat.hpp's mutex-based atomic_shared_ptr keeps the
+  // load()/store() surface, so this member declaration and every use
+  // site below stay byte-identical to upstream. SessionSlot is pure
+  // in-process pool bookkeeping: it never touches the wire or the
+  // shared-memory layout (the INV-10 compatibility surface is the
+  // queue/buffer memfd protocol, untouched here).
   struct SessionSlot {
-    std::atomic<std::shared_ptr<Session>> session;
+    atomic_shared_ptr<Session> session;
   };
 
   SessionManager(const SessionManager&) = default;
