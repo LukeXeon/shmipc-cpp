@@ -13,12 +13,11 @@
 // limitations under the License.
 
 #ifndef _GNU_SOURCE
-#define _GNU_SOURCE  // memfd_create
+#define _GNU_SOURCE  // memfd_create [rosetta:实现收编主仓 compat]
 #endif
 
 #include "shmipc/queue.hpp"
 
-#include "shmipc/compat.hpp"
 
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -203,7 +202,7 @@ QueueManager::~QueueManager() = default;
 Result<QueueManager> QueueManager::create_with_memfd(
     const std::string& queue_path, std::uint32_t queue_cap) {
   const std::string name = "shmipc" + queue_path;
-  const int memfd = memfd_create(name.c_str(), 0);
+  const int memfd = ::memfd_create(name.c_str(), 0);
   if (memfd < 0) {
     return std::unexpected(Error::from_errno(errno));
   }

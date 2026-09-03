@@ -35,7 +35,12 @@
 #include <thread>
 #include <vector>
 
-#include "shmipc/compat.hpp"
+/* [rosetta patch 0003 修订 M4 集中管理] compat 件统一收编主仓
+ * shim/compat(单一事实源;本仓自带副本退役):
+ *   - atomic_shared_ptr → compat/atomic_shared_ptr.h(NDK libc++ 缺口)
+ *   - memfd_create      → 主仓 compat 库裸符号(API<30)
+ * include 路径与 -include compat_decls.h 由主仓 CMake 注入。 */
+#include "compat/atomic_shared_ptr.h"
 #include "shmipc/consts.hpp"
 #include "shmipc/error.hpp"
 #include "shmipc/log.hpp"
@@ -96,7 +101,7 @@ class SessionManager {
   // shared-memory layout (the INV-10 compatibility surface is the
   // queue/buffer memfd protocol, untouched here).
   struct SessionSlot {
-    atomic_shared_ptr<Session> session;
+    rosetta_compat::atomic_shared_ptr<Session> session;
   };
 
   SessionManager(const SessionManager&) = default;

@@ -13,12 +13,11 @@
 // limitations under the License.
 
 #ifndef _GNU_SOURCE
-#define _GNU_SOURCE  // memfd_create
+#define _GNU_SOURCE  // memfd_create [rosetta:实现收编主仓 compat]
 #endif
 
 #include "shmipc/buffer/manager.hpp"
 
-#include "shmipc/compat.hpp"
 
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -112,7 +111,7 @@ Result<std::shared_ptr<BufferManager>> BufferManager::get_with_memfd(
 
   if (create) {
     const std::string name = "shmipc" + buffer_path_name;
-    const int fd = memfd_create(name.c_str(), 0);
+    const int fd = ::memfd_create(name.c_str(), 0);
     if (fd < 0) {
       return std::unexpected(Error::other(
           "BufferManager get_with_memfd memfd_create failed: " +
