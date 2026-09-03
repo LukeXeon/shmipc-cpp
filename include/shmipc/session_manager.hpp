@@ -101,7 +101,7 @@ class SessionManager {
   // shared-memory layout (the INV-10 compatibility surface is the
   // queue/buffer memfd protocol, untouched here).
   struct SessionSlot {
-    rosetta_compat::atomic_shared_ptr<Session> session;
+    rosetta::compat::atomic_shared_ptr<Session> session;
   };
 
   SessionManager(const SessionManager&) = default;
